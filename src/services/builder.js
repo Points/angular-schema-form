@@ -199,7 +199,8 @@ angular.module('schemaForm').provider('sfBuilder', ['sfPathProvider', function(s
         var field = decorator[f.type] || decorator['default'];
         if (!field.replace) {
           // Backwards compatability build
-          var n = document.createElement(snakeCase(decorator.__name, '-'));
+          var n = document.createElement('div');
+          n.setAttribute(snakeCase(decorator.__name, '-'), '');
           if (state.arrayCompatFlag) {
             n.setAttribute('form','copyWithIndex($index)');
           } else {
