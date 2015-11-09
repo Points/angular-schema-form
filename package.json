@@ -2,12 +2,19 @@
   "name": "@points/angular-schema-form",
   "version": "0.8.13",
   "description": "Create complex forms from a JSON schema with angular.",
-  "repository": "Textalk/angular-schema-form",
   "main": "dist/schema-form.min.js",
   "filename": "dist/schema-form.min.js",
   "homepage": "http://schemaform.io",
   "scripts": {
     "test": "rm -fr coverage && ./node_modules/karma/bin/karma start --single-run --browsers PhantomJS karma.conf.js && find coverage/ -name lcov.info -print0 | xargs -0 cat | ./node_modules/coveralls/bin/coveralls.js"
+  },
+  "publishConfig": {
+    "registry": "http://tor-npm.points.com:5984/registry/_design/app/_rewrite",
+    "scope": "@points"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Points/angular-schema-form.git"
   },
   "author": "Textalk",
   "contributors": [
