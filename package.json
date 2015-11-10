@@ -1,6 +1,6 @@
 {
   "name": "@points/angular-schema-form",
-  "version": "0.8.15",
+  "version": "0.8.16",
   "description": "Create complex forms from a JSON schema with angular.",
   "main": "dist/schema-form.min.js",
   "filename": "dist/schema-form.min.js",
