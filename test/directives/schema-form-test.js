@@ -46,7 +46,7 @@ describe('directive',function(){
       $rootScope.$apply();
 
       tmpl.children().length.should.be.equal(2);
-      tmpl.children().eq(0).is('div[bootstrap-decorator]').should.be.true;
+      tmpl.children().eq(0).is('div[data-bootstrap-decorator]').should.be.true;
       tmpl.children().eq(0).children().eq(0).is('div.form-group').should.be.true;
       tmpl.children().eq(0).children().eq(0).find('input').is('input[type="text"]').should.be.true;
       tmpl.children().eq(0).children().eq(0).find('input').attr('ng-model').should.be.equal('model[\'name\']');
@@ -72,7 +72,7 @@ describe('directive',function(){
       $rootScope.$apply();
 
       tmpl.children().length.should.be.equal(2);
-      tmpl.children().eq(0).is('div[bootstrap-decorator]').should.be.true;
+      tmpl.children().eq(0).is('div[data-bootstrap-decorator]').should.be.true;
       tmpl.children().eq(0).children().eq(0).is('div.form-group').should.be.true;
       tmpl.children().eq(0).children().eq(0).find('input').is('input[type="text"]').should.be.true;
       tmpl.children().eq(0).children().eq(0).find('input').attr('ng-model').should.be.equal('model[\'name\']');
@@ -140,7 +140,7 @@ describe('directive',function(){
 
       scope.form = ['*'];
 
-      var tmpl = angular.element('<form sf-schema="schema" sf-form="form" sf-model="person" sf-decorator-name="bootstrap-decorator"></form>');
+      var tmpl = angular.element('<form sf-schema="schema" sf-form="form" sf-model="person" sf-decorator-name="data-bootstrap-decorator"></form>');
 
       $compile(tmpl)(scope);
       $rootScope.$apply();
@@ -192,7 +192,7 @@ describe('directive',function(){
       tmpl.children().length.should.be.equal(2);
       tmpl.children().eq(0).is('input[type="text"]').should.be.true;
       tmpl.children().eq(0).attr('ng-model').should.be.equal('person.name');
-      tmpl.children().eq(1).is('div[bootstrap-decorator]').should.be.true;
+      tmpl.children().eq(1).is('div[data-bootstrap-decorator]').should.be.true;
       tmpl.children().eq(1).children().eq(0).is('div.form-group').should.be.true;
       tmpl.children().eq(1).children().eq(0).children('select').length.should.equal(1);
 

@@ -200,11 +200,11 @@ angular.module('schemaForm').provider('sfBuilder', ['sfPathProvider', function(s
         if (!field.replace) {
           // Backwards compatability build
           var n = document.createElement('div');
-          n.setAttribute(snakeCase(decorator.__name, '-'), '');
+          n.setAttribute('data-' + snakeCase(decorator.__name, '-'), '');
           if (state.arrayCompatFlag) {
-            n.setAttribute('form','copyWithIndex($index)');
+            n.setAttribute('data-form','copyWithIndex($index)');
           } else {
-            n.setAttribute('form', path + '[' + index + ']');
+            n.setAttribute('data-form', path + '[' + index + ']');
           }
 
           (checkForSlot(f, slots) || frag).appendChild(n);
