@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 
 gulp.task('default', [
-  'points-build',
+  'minify',
   'bootstrap',
   'bootstrap-datepicker'
 ]);

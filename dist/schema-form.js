@@ -1,3 +1,12 @@
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(['angular', 'objectpath', 'tv4'], factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory(require('angular'), require('objectpath'), require('tv4'));
+  } else {
+    root.schemaForm = factory(root.angular, root.objectpath, root.tv4);
+  }
+}(this, function(angular, objectpath, tv4) {
 // Deps is sort of a problem for us, maybe in the future we will ask the user to depend
 // on modules for add-ons
 
@@ -2864,3 +2873,6 @@ angular.module('schemaForm').directive('schemaValidate', ['sfValidator', '$parse
       }
     };
   }]);
+
+return schemaForm;
+}));
