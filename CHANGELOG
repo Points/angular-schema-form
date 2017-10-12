@@ -1,3 +1,102 @@
+v1.0.0-alpha.5
+--------------
+This is the fifth (of many) alpha and is **NOT ready for production** yet, reportedly does not work in IE at all.
+
+This alpha fixes a bunch of array and destroyStrategy bugs.
+
+## Known issues
+ - In Angular 1.5+ some odd behaviours can occur if refreshing a form with a flash of content experienced
+   The digest cycle is getting stuck under some unknown conditions which is most likely related
+
+## Changes
+
+### Added
+ - #612 Added 'required' class to allow appending to or highlighting content when a field is required
+ - Added test case for onChange support for array type
+
+### Fixed
+- #563 copyValueTo doesn't work with arrays
+
+v1.0.0-alpha.4
+--------------
+This is the fourth (of many) alpha and is **NOT ready for production** yet.
+
+This alpha fixes a bunch of array and destroyStrategy bugs.
+
+## Changes
+
+### Fixed
+ - #602 Custom validator's message not showing
+ - #689 DestroyStrategy does not trigger when field no longer meets condition
+ - #750 Removing an invalid array item doesn't work properly
+ - #769 Model inside Array is not cleaned when Condition fails
+ - #857 **Regression** boolean values only saving true to model
+ - Fixes angular-schema-form-bootstrap#41 Place holder does not disappear even after a valid field is selected. Thanks to @ramakrij
+
+v1.0.0-alpha.3
+--------------
+This alpha fixes a few bugs like the annoying "Invalid type, expected array" error when an array content is invalid.
+
+## Changes
+
+### Fixed
+ - #595 empty properties in schema
+ - Arrays update validity more consistently, removed Angular version specific code
+ - Add-ons will now correctly display by the added type being passed to the core correctly
+ - #625 Unstoppable "Invalid type, expected array" when form initialised with incorrect array content.
+ - #633 #602 custom validator errors.
+ - #558 Add check for schema property to prevent form generation failures when a checkbox is explicitly defined by a developer (and therefore does not have a schema property) by @vinceis1337 in #663
+
+v1.0.0-alpha.2
+--------------
+There is only one change in this alpha that needs user testing and feedback, the long awaited and much desired support for $ref.
+
+## Changes
+
+### Added
+ - $ref support for relative and local lookups based on [workaround example](https://github.com/json-schema-form/angular-schema-form/issues/69#issuecomment-176635926) provided by @AndreNel7
+
+v1.0.0-alpha.1
+--------------
+## Changes
+
+### Breaking
+ - Some add-ons will not be working yet, if an add-on is updated to use the new function it *should* work again, but there is more work to do here to make the upgrade seamless before a **beta** can be released.
+ - Decorators should be updated to use the `defineDecorator` syntax with builders prior to the 1.0.0 release.
+
+### Added
+ - **23 test cases** added to ASF and a further **30 test cases** to json-schema-form-core
+ - Integration with **json-schema-form-core**, this is the main purpose of this release as we move as much code to plain Javascript es6+ as possible to re-use the code in an **Angular 2+** release
+ - #596 arrayIndices allows access to the current path for conditions in pr #742
+ - #560 All fields should now have classes, names and ids that match and can be used for easier test writing and scripting. The classes are provided with and without array indexes so they can be accessed as a group or individually, fixed in PR #578
+ - #748 New key, include all undefined schema fields in the form that are not already added with `[ '...' ]`
+
+### Fixes
+ - Tests fixed and running
+ - Travis builds fixed and running
+ - #828 schemaFormValidate event doesn't trigger past v0.8.2
+ - #680 Pristine option was not behaving in pr #771
+ - Add support for templates with leading whitespaces in pr #725
+ - Improve sfNewArray Directive's titleMapValues Binding in pr #705
+ - #590 Problems with model binding when using nested Arrays in pr #672, #742
+ - Pass optional form name when broadcast error in in PR #656
+ - Fix for #121 to redraw with proper defaults in PR #647
+ - Revalidate model after successful custom validation event broadcasted in PR #642
+ - Fixed angular element children selector usage partially in PR #605
+ - Allow broadcasting of the formName to validate in PR #589
+ - Ensure key is set in fieldsets in PR #578
+
+Special thanks to all the following people for their help in the last year preparing for the move to this version:
+@AndreNel7 @apinnecke @blackmiaool @CatherineH @cepauskas @chargrove @donalmurtagh @edclements @elbunuelo @ErichBSchulz @jozefizso @illiano @kyse @LeonardoGentile @mathroc @plong0 @pvgnd @stanimoto @tisto @tomsowerby @zackbloom
+
+Extra special thanks to @handrews @joelwkent @nicklasb for insight, ideas and support as we head toward version 1.0.0!
+
+v0.8.13
+-------
+ * Bugfix copy the initial form default on form redraw @stanimoto
+ * Bugfix for revalidating the model after custom validation event is broadcast @cepauskas
+ * New event value. The form name is now passed in validate and error events @tomsowerby & @LeonardoGentile
+
 v0.8.12
 -------
  * Bugfix for `condition` builder. It had a typo that broke it.
@@ -79,6 +178,7 @@ v0.8.1
 
 
 v0.8.0
+------
 Loads of stuff happened this release, so we're bumping version to 0.8.0.
 Note as well that there is a small change to `tabsarray` type regarding its title, the title is now
 interpolated instead of eval'd. So if you have any problems slap on a `{{ }}` around the tab title.
@@ -118,14 +218,14 @@ v0.7.11
 
 v0.7.10
 ------
-* Accessability additions, thanks @stramel
-* Updates to the gulp tasks, thanks @stramel
-* Updated to bower, thanks @Dervisevic
-* Updates to documentation & README & Contributing.md, thanks @davidlgj @Dervisevic
-* Speed optimization, thanks @stramel
-* Call ngModel.$setDirty() when deleting from array, thanks @qstrahl
-* Don't override readonly if specified on items individually, thanks @qstrahl
-* Update to the examples, thanks @mike-marcacci
+ * Accessability additions, thanks @stramel
+ * Updates to the gulp tasks, thanks @stramel
+ * Updated to bower, thanks @Dervisevic
+ * Updates to documentation & README & Contributing.md, thanks @davidlgj @Dervisevic
+ * Speed optimization, thanks @stramel
+ * Call ngModel.$setDirty() when deleting from array, thanks @qstrahl
+ * Don't override readonly if specified on items individually, thanks @qstrahl
+ * Update to the examples, thanks @mike-marcacci
 
 v0.7.9
 ------
@@ -264,7 +364,7 @@ We're celebrating actual useful functionality by bumping minor version, yay!
 
 v0.0.4
 ------
-* Fieldsets now properly merge schema defaults.
-* Directives for "manual" decorator usage.
-* Basic support for buttons.
-* Basic support for custom validation error messages.
+ * Fieldsets now properly merge schema defaults.
+ * Directives for "manual" decorator usage.
+ * Basic support for buttons.
+ * Basic support for custom validation error messages.

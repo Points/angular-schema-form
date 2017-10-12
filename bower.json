@@ -1,15 +1,13 @@
 {
   "name": "angular-schema-form",
-  "main": [
-    "dist/schema-form.js",
-    "dist/bootstrap-decorator.js"
-  ],
+  "main": "dist/angular-schema-form.js",
   "authors": [
     "Textalk",
     "David Jensen <david.lgj@gmail.com>",
     "Cameron Edwards",
     "Mike Marcacci",
-    "Denis Dervisevic <denis@dervisevic.se>"
+    "Denis Dervisevic <denis@dervisevic.se>",
+    "Marcel J Bennett <iamanthropic@gmail.com>"
   ],
   "moduleType": [
     "globals"
@@ -20,7 +18,9 @@
     "form",
     "json",
     "json-schema",
-    "schema"
+    "schema",
+    "json-schema-form",
+    "angular-schema-form"
   ],
   "license": "MIT",
   "ignore": [
@@ -39,10 +39,9 @@
     "karma.conf.js"
   ],
   "dependencies": {
-    "angular": ">= 1.2",
+    "angular": ">= 1.3",
     "tv4": "~1.0.15",
-    "angular-sanitize": ">= 1.2",
-    "objectpath": "~1.1.0"
+    "angular-sanitize": ">= 1.2"
   },
   "devDependencies": {
     "angular-ui-ace": "bower",
@@ -53,6 +52,11 @@
     "tx-tinymce": ">= 0.0.5",
     "angular-ui-sortable": ">=0.12.11",
     "bootstrap-vertical-tabs": "~1.2.0",
-    "angular-schema-form-bootstrap": "~0.1.1"
+    "angular-schema-form-bootstrap": "~0.1.1",
+    "angular-schema-form-tinymce": "^0.1.0"
+  },
+  "resolutions": {
+    "jquery": "~2.1.1",
+    "angular": "1.3"
   }
 }

@@ -1,62 +1,76 @@
-
 IMPORTANT
 =========
 
 **Angular Schema Form is undergoing a refactoring and the "bootstrap decorator", i.e. the part with
-all the HTML has been moved to [github.com/Textalk/angular-schema-form-bootstrap](https://github.com/Textalk/angular-schema-form-bootstrap).**
+all the HTML has been moved to [github.com/json-schema-form/angular-schema-form-bootstrap](https://github.com/json-schema-form/angular-schema-form-bootstrap).**
 
 The documentation below, especially form options is therefore somewhat bootstrap decorator
 specific. The docs is undergoing updating.
 
+Migration Guide
+===============
+If you use the library factories in an app or an add-on or plan to upgrade versions, please read the 
+[migration guide](migration.md) for any items that may need consideration.
 
 Documentation
 =============
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-1. [Basic Usage](#basic-usage)
-1. [Handling Submit](#handling-submit)
-1. [Updating Form](#updating-form)
-1. [Global Options](#global-options)
-1. [Validation Messages](#validation-messages)
-1. [Custom Validation](#custom-validation)
-    1. [Inject errors into form, aka backend validation](#inject-errors-into-form-aka-backend-validation)
-    1. [Using ngModelController](#using-ngmodelcontroller)
-        1. [$validators](#$validators)
-        1. [$asyncVaidators](#$asyncValidators)
-1. [Form defaults in schema](#form-defaults-in-schema)
-1. [Form types](#form-types)
-1. [Default form types](#default-form-types)
-1. [Form definitions](#form-definitions)
-1. [Overriding field types and order](#overriding-field-types-and-order)
-1. [Standard Options](#standard-options)
-    1. [onChange](#onchange)
-    1. [Validation Messages](#validation-messages)
-    1. [Inline feedback icons](#inline-feedback-icons)
-    1. [ngModelOptions](#ngmodeloptions)
-    1. [copyValueTo](#copyvalueto)
-1. [Specific options and types](#specific-options-and-types)
-    1. [input group addons](#input-group-addons)
-    1. [fieldset and section](#fieldset-and-section)
-    1. [select and checkboxes](#select-and-checkboxes)
-    1. [actions](#actions)
-    1. [button](#button)
-    1. [radios and radiobuttons](#radios-and-radiobuttons)
-    1. [help](#help)
-    1. [template](#template)
-    1. [tabs](#tabs)
-    1. [array](#array)
-    1. [tabarray](#tabarray)
-1. [Post process function](#post-process-function)
-1. [Events](#events)
-1. [Manual field insertion](#manual-field-insertion)
-1. [Deprecated fields](#deprecated-fields)
-1. [Extending Schema Form](extending.md)
+
+- [Basic Usage](#basic-usage)
+- [Handling Submit](#handling-submit)
+- [Updating Form](#updating-form)
+- [Global Options](#global-options)
+- [Validation Messages](#validation-messages)
+  - [Message Interpolation](#message-interpolation)
+  - [Taking over: functions as validationMessages](#taking-over-functions-as-validationmessages)
+- [Custom Validation](#custom-validation)
+  - [Inject errors into form aka backend validation](#inject-errors-into-form-aka-backend-validation)
+  - [Using ngModelController](#using-ngmodelcontroller)
+    - [$validators](#validators)
+    - [$asyncValidators](#asyncvalidators)
+- [Form defaults in schema](#form-defaults-in-schema)
+- [Form types](#form-types)
+- [Default form types](#default-form-types)
+- [Form definitions](#form-definitions)
+- [Overriding field types and order](#overriding-field-types-and-order)
+- [Standard Options](#standard-options)
+  - [onChange](#onchange)
+  - [Validation Messages](#validation-messages-1)
+  - [Inline feedback icons](#inline-feedback-icons)
+  - [ngModelOptions](#ngmodeloptions)
+  - [copyValueTo](#copyvalueto)
+  - [condition](#condition)
+  - [destroyStrategy](#destroystrategy)
+- [Specific options and types](#specific-options-and-types)
+  - [input group addons](#input-group-addons)
+  - [fieldset and section](#fieldset-and-section)
+  - [select and checkboxes](#select-and-checkboxes)
+  - [actions](#actions)
+  - [button and submit](#button-and-submit)
+  - [radios and radiobuttons](#radios-and-radiobuttons)
+  - [help](#help)
+  - [template](#template)
+  - [tabs](#tabs)
+  - [array](#array)
+  - [tabarray](#tabarray)
+    - [Deprecation Warning](#deprecation-warning)
+- [Post process function](#post-process-function)
+- [Events](#events)
+  - [Manual field insertion](#manual-field-insertion)
+- [Deprecated fields](#deprecated-fields)
+  - [conditional](#conditional)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+- [Extending Schema Form](extending.md)
 
 Basic Usage
 -----------
 
-First, expose your schema, form, and model to the $scope.
-Don't forget to load the `schemaForm` module.
-
+After installing, load the `schemaForm` module in your module definition.
+Then, in your controller, expose your [schema](http://json-schema.org/), form, and [model](https://docs.angularjs.org/guide/databinding) to the $scope.
+Your schema defines your data structure, the form definition draws on this definition to define the user interface, and the model binds the user input to the controller.
 ```javascript
 angular.module('myModule', ['schemaForm'])
        .controller('FormController', function($scope) {
@@ -82,9 +96,8 @@ angular.module('myModule', ['schemaForm'])
   $scope.model = {};
 }
 ```
-
-Then load them into Schema Form using the `sfSchema`, `sfForm`, and `sfModel` directives.
-
+Then, in your template, load them into Schema Form using the
+`sfSchema`, `sfForm`, and `sfModel` directives.
 ```html
 <div ng-controller="FormController">
     <form sf-schema="schema" sf-form="form" sf-model="model"></form>
@@ -336,17 +349,30 @@ or Schema Form does not support it (yet), like `anyOf` and `oneOf`.
 Other times you really need to ask the backend, maybe to check that the a username is not already
 taken or some other constraint that only the backend can know about.
 
+### NOTE: Odd default behaviour in ngModelOptions
+Once an individual field is edited, if it is invalid your error should appear, however then validating the whole form can no longer display your message. This is due to a feature of ngModelController where it doesn't add invalid fields to your model, if this is not the behaviour you wish to see, you can change it by adding `ng-model-options="{ allowInvalid: true }"` to your form.
+
 ### Inject errors into form aka backend validation
 To support validation outside of the form, most commonly on the backend, schema form lets you
 injecting arbitrary validationMessages to any field and setting it's validity.
 
 This is done via an event that starts with `schemaForm.error.` and ends with the key to the field.
-It also takes two arguments, the first being the error code, the second being either a
+It also takes two mandatory and an optional arguments, the first being the error code, the second being _either_ a
 validation message or a boolean that sets validity, specifying a validation message automatically
-sets the field to invalid.
+sets the field to invalid. The third and last one is optional and it represents the form name. If the form name is not specified then the event is broadcasted for all the schema forms contained in the controller that is broacasting the event. In case there are multiple forms for a specific controller it could be useful to specify the form name in order to let only the interested form capture the error event.
 
 So lets do an example, say you have a form with a text field `name`:
 
+Html
+```html
+<form
+    name="myForm"
+    sf-schema="schema"
+    sf-form="form"
+    sf-model="formData"
+    ng-submit="onSubmit(myForm)">
+</form>
+```
 Schema
 ```json
 {
@@ -370,6 +396,8 @@ optional validation message.
 
 ```js
 scope.$broadcast('schemaForm.error.name','usernameAlreadyTaken','The username is already taken');
+// or with the optional form name
+scope.$broadcast('schemaForm.error.name','usernameAlreadyTaken','The username is already taken', 'myForm');
 ```
 This will invalidate the field and therefore the form and show the error message where it normally
 pops up, under the field for instance.
@@ -380,6 +408,8 @@ i.e. `true`.
 
 ```js
 scope.$broadcast('schemaForm.error.name','usernameAlreadyTaken',true);
+// or with the optional form name
+scope.$broadcast('schemaForm.error.name','usernameAlreadyTaken',true, 'myForm');
 ```
 
 You can also pre-populate the validation messages if you don't want to send them in the event.
@@ -390,7 +420,7 @@ Form
   {
     "key": "name",
     "validationMessages": {
-      "userNameAlreadyTaken"
+      "userNameAlreadyTaken": "The username is already taken"
     }
   }
 ]
@@ -482,6 +512,8 @@ if you for some reason can't do this, but *do* have the power to change the sche
 default values within the schema using the custom attribute `x-schema-form`. `x-schema-form` should
 be a form object and acts as form definition defaults for that field.
 
+Note: If adding a titleMap it MUST be in the object list format as demonstrated in the example below.
+
 Example schema.
 ```js
 {
@@ -493,6 +525,11 @@ Example schema.
       "x-schema-form": {
         "type": "textarea",
         "placeholder": "Don't hold back"
+        "titleMap": {
+          { "name": "Example A", "value": "a" },
+          { "name": "Example B", "value": "b" },
+          { "name": "Example C", "value": "c" }
+        }
       }
     }
   }
@@ -528,15 +565,13 @@ Schema Form currently supports the following form field types out of the box:
 
 More field types can be added, for instance a "datepicker" type can be added by
 including the [datepicker addon](https://github.com/Textalk/angular-schema-form-datepicker), see
-the [front page](http://textalk.github.io/angular-schema-form/#third-party-addons) for an updated
-list.
+the [front page](http://schemaform.io/#/third-party-addons) for an updated list.
 
 
 Default form types
 ------------------
 Schema Form defaults to certain types of form fields depending on the schema for
 a property.
-
 
 | Schema             |   Form type  |
 |:-------------------|:------------:|
@@ -548,7 +583,6 @@ a property.
 | "type": "string" and a "enum" | select |
 | "type": "array" and a "enum" in array type | checkboxes |
 | "type": "array" | array |
-
 
 
 Form definitions
@@ -623,6 +657,13 @@ var schema = {
   }
 ]
 ```
+
+$ref
+----------------
+`$ref` support is provided by the `json-refs` module and is currently using the filter `[ 'relative', 'local', 'remote' ]`
+
+**Note**: An object containing `$ref` should be assumed to be entirely replaced by the referenced object as per the 
+json-schema specification.
 
 Standard Options
 ----------------
@@ -768,7 +809,7 @@ function FormCtrl($scope) {
         "title": "Eligible for awesome things"
       },
       "code": {
-        "type":"string"
+        "type":"string",
         "title": "The Code"
       }
     }
@@ -811,7 +852,7 @@ function FormCtrl($scope) {
               "title": "Eligible for awesome things"
             },
             "code": {
-              "type":"string"
+              "type":"string",
               "title": "The Code"
             }
           }
@@ -938,7 +979,7 @@ element to the select.
   titleMap: [
     { value: "yes", name: "Yes I do", group: "Boolean" },
     { value: "no", name: "Hell no" , group: "Boolean" },
-    { value: "no", name: "File Not Found", group: "Other" },
+    { value: "no", name: "File Not Found", group: "Other" }
   ]
 }
 ```
@@ -952,7 +993,7 @@ element to the select.
 {
   type: "actions",
   items: [
-    { type: 'submit', title: 'Ok' }
+    { type: 'submit', title: 'Ok' },
     { type: 'button', title: 'Cancel', onClick: "cancel()" }
   ]
 }
@@ -964,7 +1005,7 @@ We can change this with ```style``` attribute:
 {
   type: "actions",
   items: [
-    { type: 'submit', style: 'btn-success', title: 'Ok' }
+    { type: 'submit', style: 'btn-success', title: 'Ok' },
     { type: 'button', style: 'btn-info', title: 'Cancel', onClick: "cancel()" }
   ]
 }
@@ -978,7 +1019,7 @@ the ```sf-schema``` directive.
 
 ```javascript
 [
-  { type: 'submit', title: 'Ok', onClick: function(){ ...  } }
+  { type: 'submit', title: 'Ok', onClick: function(){ ...  } },
   { type: 'button', title: 'Cancel', onClick: "cancel()" }
 [
 ```
@@ -987,7 +1028,7 @@ The submit and other buttons have btn-default as default.
 We can change this with ```style``` attribute:
 ```javascript
 [
-  { type: 'submit', style: 'btn-warning', title: 'Ok', onClick: function(){ ...  } }
+  { type: 'submit', style: 'btn-warning', title: 'Ok', onClick: function(){ ...  } },
   { type: 'button', style: 'btn-danger', title: 'Cancel', onClick: "cancel()" }
 [
 ```
@@ -1061,7 +1102,7 @@ function FormCtrl($scope) {
       type: "radios",
       titleMap: [
         { value: false, name: "No I don't understand these cryptic terms" },
-        { value: true, , name: "Yes this makes perfect sense to me" }
+        { value: true, name: "Yes this makes perfect sense to me" }
       ]
     }
   ];
@@ -1088,13 +1129,14 @@ function FormCtrl($scope) {
       key: "choice",
       type: "radiobuttons",
       style: {
-		selected: "btn-success",
-		unselected: "btn-default"
-	  },
-	  titleMap: [
-     { value: "one", name: "One" },
-     { value, "two", name: "More..." }
-   ]
+        selected: "btn-success",
+        unselected: "btn-default"
+      },
+      titleMap: [
+        { value: "one", name: "One" },
+        { value, "two", name: "More..." }
+      ]
+    }
   ];
 }
 ```
@@ -1233,7 +1275,7 @@ could be changed using attribute `add`, see example below.
 If you like to have drag and drop reordering of arrays you also need
 [ui-sortable](https://github.com/angular-ui/ui-sortable) and its dependencies
 [jQueryUI](http://jqueryui.com/), see *ui-sortable* documentation for details of
-what parts of jQueryUI that is needed. You can also pass options to the *ui-sortable* directive 
+what parts of jQueryUI that is needed. You can also pass options to the *ui-sortable* directive
 by including a `sortOptions` key on the form object. Check the *ui-sortable* documentation
 for a complete list of available options. You can safely ignore these if you don't need the reordering.
 
@@ -1327,8 +1369,8 @@ function FormCtrl($scope) {
       key: "subforms",
       add: "Add person",
       style: {
-		add: "btn-success"
-	  },
+		    add: "btn-success"
+	    },
       items: [
         "subforms[].nick",
         "subforms[].name",
@@ -1349,8 +1391,8 @@ function FormCtrl($scope) {
       add: null,
       remove: null,
       style: {
-		add: "btn-success"
-	  },
+        add: "btn-success"
+      },
       items: [
         "subforms[].nick",
         "subforms[].name",
@@ -1467,13 +1509,13 @@ function FormCtrl($scope) {
       key: "subforms",
       remove: "Delete",
       style: {
-		remove: "btn-danger"
-	  },
-	  add: "Add person",
+        remove: "btn-danger"
+      },
+      add: "Add person",
       items: [
         "subforms[].nick",
         "subforms[].name",
-        "subforms[].emails",
+        "subforms[].emails"
       ]
     }
   ];
@@ -1593,7 +1635,7 @@ function FormCtrl($scope) {
         "title": "Eligible for awesome things"
       },
       "code": {
-        "type":"string"
+        "type":"string",
         "title": "The Code"
       }
     }
@@ -1639,7 +1681,7 @@ function FormCtrl($scope) {
               "title": "Eligible for awesome things"
             },
             "code": {
-              "type":"string"
+              "type":"string",
               "title": "The Code"
             }
           }
@@ -1668,3 +1710,6 @@ function FormCtrl($scope) {
 ```
 
 Note that arrays inside arrays won't work with conditional.
+
+#### i18n/ l10n
+While the library does not specifically address i18n/l10n (Internationalization/ Localization) it is certainly possible as <a href="https://plnkr.co/edit/WKduZL0Xe2lmkV9N5mk8?p=preview">this plunker</a> demonstrates.
