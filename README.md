@@ -8,9 +8,13 @@ Angular Schema Form
 
 Generate forms from JSON schemas using AngularJS!
 
+Why not many changes lately?
+============================
+Much of the new development is being done in [Assimilate](https://github.com/jsonschema/assimilate), a standardised validator for JSON Schema to help ensure changing validators is never as painful as escaping tv4 is, as well as a new [core library](https://github.com/json-schema-form/json-schema-form-core) to allow for a more predictable upgrade from AngularJS to Angular.
+
 The Blog / The Web Site / The Twitter / The Movie
 =================================================
-[medium.com/@SchemaFormIO](https://medium.com/@SchemaFormIO) / [schemaform.io](http://schemaform.io) / [@SchemaFormIO](http://twitter.com/SchemaFormIO) / [Movie](https://www.youtube.com/watch?v=duBFMipRq2o)
+[medium.com/@SchemaFormIO](https://medium.com/@SchemaFormIO) / [website](https://json-schema-form.github.io/angular-schema-form) / [@SchemaFormIO](http://twitter.com/SchemaFormIO) / [Movie](https://www.youtube.com/watch?v=duBFMipRq2o)
 
 If you use ASF in your project/company please let us know! We'd love to feature you on the site.
 
